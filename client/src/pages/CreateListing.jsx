@@ -328,7 +328,7 @@ export default function CreateListing() {
             <button
               type='button'
               disabled={uploading}
-              onClick={handleImageSubmit}
+              onClick={handleImageSubmit} s
               className='p-3 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-80'
             >
               {uploading ? 'Uploading...' : 'Upload'}
