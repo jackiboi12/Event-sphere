@@ -1,6 +1,11 @@
 import { useState } from "react";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { storage } from "../firebase";
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
+import { app } from "../firebase";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -16,7 +21,7 @@ export default function CreateListing() {
     type: "rent",
     bedrooms: 1,
     bathrooms: 1,
-    regularPrice: 50,
+    regularPrice: 5000,
     discountPrice: 0,
     offer: false,
     parking: false,
@@ -26,7 +31,7 @@ export default function CreateListing() {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
-  console.log(formData);
+  // console.log(formData);
   const handleImageSubmit = (e) => {
     if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
       setUploading(true);
@@ -57,6 +62,7 @@ export default function CreateListing() {
 
   const storeImage = async (file) => {
     return new Promise((resolve, reject) => {
+      const storage = getStorage(app);
       const fileName = new Date().getTime() + file.name;
       const storageRef = ref(storage, fileName);
       const uploadTask = uploadBytesResumable(storageRef, file);
@@ -276,7 +282,7 @@ export default function CreateListing() {
               <div className="flex flex-col items-center">
                 <p>Regular price</p>
                 {formData.type === "rent" && (
-                  <span className="text-xs">($ / month)</span>
+                  <span className="text-xs">(INR / month)</span>
                 )}
               </div>
             </div>
@@ -296,7 +302,7 @@ export default function CreateListing() {
                   <p>Discounted price</p>
 
                   {formData.type === "rent" && (
-                    <span className="text-xs">($ / month)</span>
+                    <span className="text-xs">(INR / month)</span>
                   )}
                 </div>
               </div>
@@ -323,7 +329,6 @@ export default function CreateListing() {
               type="button"
               disabled={uploading}
               onClick={handleImageSubmit}
-              s
               className="p-3 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-80"
             >
               {uploading ? "Uploading..." : "Upload"}
