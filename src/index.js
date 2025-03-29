@@ -36,10 +36,21 @@ app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/listing", listingRouter);
 
-app.use(express.static(path.join(__dirname, "/client/dist")));
+// Determine the correct path for client files based on environment
+const clientPath =
+  process.env.NODE_ENV === "production"
+    ? path.join(__dirname, "../client/dist")
+    : path.join(__dirname, "/client/dist");
+
+app.use(express.static(clientPath));
 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
+  const indexPath =
+    process.env.NODE_ENV === "production"
+      ? path.join(__dirname, "../client/dist/index.html")
+      : path.join(__dirname, "client", "dist", "index.html");
+
+  res.sendFile(indexPath);
 });
 
 app.use((err, req, res, next) => {

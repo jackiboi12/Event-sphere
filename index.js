@@ -1,4 +1,8 @@
 // This is a simple proxy to load the correct index.js file
+console.log("Starting application from root index.js");
+console.log("Current directory:", process.cwd());
+console.log("Environment:", process.env.NODE_ENV);
+
 import("./src/index.js").catch((err) => {
   console.error("Error loading src/index.js:", err);
   // Try API directory as fallback
