@@ -161,12 +161,12 @@ export default function Footer() {
               <li className="flex items-start space-x-3">
                 <FaMapMarkerAlt className="text-primary-400 mt-1 flex-shrink-0" />
                 <span className="text-neutral-400">
-                  123 Event Plaza, San Francisco, CA 94105
+                  123 streets 
                 </span>
               </li>
               <li className="flex items-center space-x-3">
                 <FaPhone className="text-primary-400 flex-shrink-0" />
-                <span className="text-neutral-400">(123) 456-7890</span>
+                <span className="text-neutral-400">(91) 80022XXX</span>
               </li>
               <li className="flex items-center space-x-3">
                 <FaEnvelope className="text-primary-400 flex-shrink-0" />
