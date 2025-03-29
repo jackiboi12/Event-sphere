@@ -9,11 +9,22 @@ export default function Header() {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const urlParams = new URLSearchParams(window.location.search);
+    const urlParams = new URLSearchParams();
     urlParams.set("searchTerm", searchTerm);
+    urlParams.set("type", "all");
     const searchQuery = urlParams.toString();
     navigate(`/search?${searchQuery}`);
   };
@@ -27,61 +38,191 @@ export default function Header() {
   }, [location.search]);
 
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50">
-      <div className="flex justify-between items-center max-w-6xl mx-auto p-3">
+    <header
+      style={{
+        position: "sticky",
+        top: 0,
+        zIndex: 50,
+        transition: "all 300ms",
+        backgroundColor: scrolled ? "white" : "rgba(255, 255, 255, 0.9)",
+        backdropFilter: "blur(8px)",
+        boxShadow: scrolled ? "0 4px 6px -1px rgba(0, 0, 0, 0.1)" : "none",
+        padding: scrolled ? "0.5rem 0" : "0.75rem 0",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          maxWidth: "72rem",
+          margin: "0 auto",
+          padding: "0 1rem",
+        }}
+      >
         <Link to="/">
-          <h1 className="font-bold text-xl sm:text-2xl flex flex-wrap">
-            <span className="text-accent-blue">Book</span>
-            <span className="text-neutral-800">nStay</span>
+          <h1 style={{ fontWeight: "bold", fontSize: "1.5rem" }}>
+            <span style={{ color: "var(--primary-600)" }}>Book</span>
+            <span style={{ color: "var(--primary-900)" }}>nStay</span>
+            <span
+              style={{ color: "var(--primary-600)", marginLeft: "0.25rem" }}
+            >
+              Events
+            </span>
           </h1>
         </Link>
 
         <form
           onSubmit={handleSubmit}
-          className="hidden md:flex bg-neutral-100 p-2 rounded-lg items-center"
+          style={{
+            backgroundColor: "var(--neutral-100)",
+            padding: "0.5rem",
+            borderRadius: "9999px",
+            alignItems: "center",
+            border: "1px solid var(--neutral-200)",
+          }}
+          className="hidden md:flex"
         >
           <input
             type="text"
-            placeholder="Search..."
-            className="bg-transparent focus:outline-none w-64 text-neutral-800 placeholder-neutral-500 px-2"
+            placeholder="Search events..."
+            style={{
+              backgroundColor: "transparent",
+              outline: "none",
+              width: "16rem",
+              color: "var(--neutral-800)",
+              padding: "0 0.5rem",
+            }}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <button className="bg-accent-blue p-2 rounded-lg text-white">
+          <button
+            style={{
+              backgroundColor: "var(--primary-600)",
+              padding: "0.5rem",
+              borderRadius: "9999px",
+              color: "white",
+            }}
+          >
             <FaSearch />
           </button>
         </form>
 
         {/* Desktop Menu */}
-        <div className="hidden md:flex items-center gap-4">
+        <div
+          className="hidden md:flex"
+          style={{
+            alignItems: "center",
+            gap: "1.25rem",
+          }}
+        >
           <Link to="/">
-            <span className="text-neutral-700 hover:text-accent-blue transition-colors">
+            <span
+              className="hover-text-primary"
+              style={{
+                color: "var(--neutral-700)",
+                fontWeight: "500",
+              }}
+            >
               Home
             </span>
           </Link>
+          <Link to="/search?type=all">
+            <span
+              className="hover-text-primary"
+              style={{
+                color: "var(--neutral-700)",
+                fontWeight: "500",
+              }}
+            >
+              Explore Events
+            </span>
+          </Link>
           <Link to="/about">
-            <span className="text-neutral-700 hover:text-accent-blue transition-colors">
+            <span
+              className="hover-text-primary"
+              style={{
+                color: "var(--neutral-700)",
+                fontWeight: "500",
+              }}
+            >
               About
             </span>
           </Link>
-          <Link to="/profile">
-            {currentUser ? (
-              <img
-                className="rounded-full h-9 w-9 object-cover border-2 border-accent-blue"
-                src={currentUser.avatar}
-                alt="profile"
-              />
-            ) : (
-              <button className="bg-accent-blue text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+          {currentUser && (
+            <Link to="/create-event">
+              <span
+                style={{
+                  backgroundColor: "var(--primary-50)",
+                  color: "var(--primary-700)",
+                  padding: "0.25rem 0.75rem",
+                  borderRadius: "9999px",
+                  border: "1px solid var(--primary-200)",
+                  fontWeight: "500",
+                }}
+              >
+                Create Event
+              </span>
+            </Link>
+          )}
+          {currentUser ? (
+            <Link to="/profile">
+              <div style={{ position: "relative" }}>
+                <img
+                  style={{
+                    borderRadius: "9999px",
+                    height: "2.25rem",
+                    width: "2.25rem",
+                    objectFit: "cover",
+                    border: "2px solid var(--primary-300)",
+                  }}
+                  src={currentUser.avatar}
+                  alt="profile"
+                />
+                <span
+                  style={{
+                    position: "absolute",
+                    bottom: "-0.25rem",
+                    right: "-0.25rem",
+                    height: "0.875rem",
+                    width: "0.875rem",
+                    backgroundColor: "#22c55e",
+                    borderRadius: "9999px",
+                    border: "2px solid white",
+                  }}
+                ></span>
+              </div>
+            </Link>
+          ) : (
+            <Link to="/sign-in">
+              <button
+                style={{
+                  backgroundColor: "var(--primary-600)",
+                  color: "white",
+                  padding: "0.5rem 1rem",
+                  borderRadius: "9999px",
+                }}
+                className="hover-button"
+                onMouseOver={(e) =>
+                  (e.currentTarget.style.backgroundColor = "var(--primary-700)")
+                }
+                onMouseOut={(e) =>
+                  (e.currentTarget.style.backgroundColor = "var(--primary-600)")
+                }
+              >
                 Sign in
               </button>
-            )}
-          </Link>
+            </Link>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
         <button
-          className="md:hidden text-neutral-800 text-2xl"
+          className="md:hidden"
+          style={{
+            color: "var(--neutral-800)",
+            fontSize: "1.5rem",
+          }}
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         >
           {mobileMenuOpen ? <HiX /> : <HiMenu />}
@@ -90,39 +231,145 @@ export default function Header() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white border-t border-neutral-200 p-4 animate-fadeIn">
+        <div
+          className="md:hidden animate-fadeIn"
+          style={{
+            backgroundColor: "white",
+            borderTop: "1px solid var(--neutral-200)",
+            padding: "1rem",
+          }}
+        >
           <form
             onSubmit={handleSubmit}
-            className="flex bg-neutral-100 p-2 rounded-lg items-center mb-4"
+            style={{
+              display: "flex",
+              backgroundColor: "var(--neutral-100)",
+              padding: "0.5rem",
+              borderRadius: "9999px",
+              alignItems: "center",
+              marginBottom: "1rem",
+              border: "1px solid var(--neutral-200)",
+            }}
           >
             <input
               type="text"
-              placeholder="Search..."
-              className="bg-transparent focus:outline-none w-full text-neutral-800 placeholder-neutral-500 px-2"
+              placeholder="Search events..."
+              style={{
+                backgroundColor: "transparent",
+                outline: "none",
+                width: "100%",
+                color: "var(--neutral-800)",
+                padding: "0 0.5rem",
+              }}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <button className="bg-accent-blue p-2 rounded-lg text-white">
+            <button
+              style={{
+                backgroundColor: "var(--primary-600)",
+                padding: "0.5rem",
+                borderRadius: "9999px",
+                color: "white",
+              }}
+            >
               <FaSearch />
             </button>
           </form>
 
-          <div className="flex flex-col gap-4">
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
+          >
             <Link to="/" onClick={() => setMobileMenuOpen(false)}>
-              <span className="text-neutral-700 hover:text-accent-blue transition-colors block py-2 border-b border-neutral-100">
+              <span
+                className="hover-text-primary"
+                style={{
+                  color: "var(--neutral-700)",
+                  display: "block",
+                  padding: "0.5rem 0",
+                  borderBottom: "1px solid var(--neutral-100)",
+                }}
+              >
                 Home
               </span>
             </Link>
+            <Link
+              to="/search?type=all"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <span
+                className="hover-text-primary"
+                style={{
+                  color: "var(--neutral-700)",
+                  display: "block",
+                  padding: "0.5rem 0",
+                  borderBottom: "1px solid var(--neutral-100)",
+                }}
+              >
+                Explore Events
+              </span>
+            </Link>
             <Link to="/about" onClick={() => setMobileMenuOpen(false)}>
-              <span className="text-neutral-700 hover:text-accent-blue transition-colors block py-2 border-b border-neutral-100">
+              <span
+                className="hover-text-primary"
+                style={{
+                  color: "var(--neutral-700)",
+                  display: "block",
+                  padding: "0.5rem 0",
+                  borderBottom: "1px solid var(--neutral-100)",
+                }}
+              >
                 About
               </span>
             </Link>
-            <Link to="/profile" onClick={() => setMobileMenuOpen(false)}>
-              <span className="text-neutral-700 hover:text-accent-blue transition-colors block py-2">
-                Profile
-              </span>
-            </Link>
+            {currentUser ? (
+              <>
+                <Link to="/profile" onClick={() => setMobileMenuOpen(false)}>
+                  <span
+                    className="hover-text-primary"
+                    style={{
+                      color: "var(--neutral-700)",
+                      display: "block",
+                      padding: "0.5rem 0",
+                      borderBottom: "1px solid var(--neutral-100)",
+                    }}
+                  >
+                    Profile
+                  </span>
+                </Link>
+                <Link
+                  to="/create-event"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <span
+                    className="hover-text-primary"
+                    style={{
+                      color: "var(--neutral-700)",
+                      display: "block",
+                      padding: "0.5rem 0",
+                      borderBottom: "1px solid var(--neutral-100)",
+                    }}
+                  >
+                    Create Event
+                  </span>
+                </Link>
+              </>
+            ) : (
+              <Link to="/sign-in" onClick={() => setMobileMenuOpen(false)}>
+                <span
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    backgroundColor: "var(--primary-600)",
+                    color: "white",
+                    padding: "0.5rem 0",
+                    borderRadius: "9999px",
+                  }}
+                >
+                  Sign In
+                </span>
+              </Link>
+            )}
           </div>
         </div>
       )}

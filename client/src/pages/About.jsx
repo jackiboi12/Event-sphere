@@ -1,17 +1,33 @@
-import React from 'react';
+import React from "react";
 
 export default function About() {
   return (
     <div className="py-16 px-6 max-w-5xl mx-auto bg-gray-50 rounded-lg shadow-lg">
-      <h1 className="text-4xl font-extrabold text-gray-900 mb-6 text-center">About BooknStay</h1>
+      <h1 className="text-4xl font-extrabold text-gray-900 mb-6 text-center">
+        About BooknStay Events
+      </h1>
       <p className="mb-4 text-lg text-gray-700 leading-relaxed">
-        Welcome to <span className="font-semibold text-blue-600">BooknStay</span> — your one-stop destination for finding the perfect place to rent, buy, or sell properties. Whether you're looking for a cozy apartment, a luxurious villa, or a commercial space, we connect you with the best options available.
+        Welcome to{" "}
+        <span className="font-semibold text-blue-600">BooknStay Events</span> —
+        your one-stop destination for discovering and booking the most exciting
+        events happening around you. From conferences and workshops to concerts
+        and sports events, we connect you with memorable experiences tailored to
+        your interests.
       </p>
       <p className="mb-4 text-lg text-gray-700 leading-relaxed">
-        At <span className="font-semibold text-blue-600">BooknStay</span>, we strive to make property transactions seamless and stress-free. Our platform offers detailed property listings, verified reviews, and a hassle-free booking process. Whether you are a homeowner, investor, or tenant, we ensure a smooth experience at every step.
+        At <span className="font-semibold text-blue-600">BooknStay Events</span>
+        , we strive to make event discovery and booking seamless and
+        stress-free. Our platform offers detailed event listings, interactive
+        calendars, and a hassle-free reservation process. Whether you're an
+        event organizer or an attendee, we ensure a smooth experience at every
+        step.
       </p>
       <p className="mb-4 text-lg text-gray-700 leading-relaxed">
-        Explore properties in prime locations, compare prices, and find the best deals tailored to your needs. Start your journey with <span className="font-semibold text-blue-600">BooknStay</span> today and experience real estate like never before!
+        Explore events in your area, filter by categories, and find the perfect
+        experiences that match your interests and schedule. Start your journey
+        with{" "}
+        <span className="font-semibold text-blue-600">BooknStay Events</span>{" "}
+        today and create memories that last a lifetime!
       </p>
     </div>
   );

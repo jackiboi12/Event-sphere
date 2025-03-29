@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-const listingSchema = new mongoose.Schema(
+const eventSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -10,11 +10,19 @@ const listingSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    address: {
+    location: {
       type: String,
       required: true,
     },
-    regularPrice: {
+    eventDate: {
+      type: Date,
+      required: true,
+    },
+    eventTime: {
+      type: String,
+      required: true,
+    },
+    ticketPrice: {
       type: Number,
       required: true,
     },
@@ -22,24 +30,32 @@ const listingSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    bathrooms: {
+    capacity: {
       type: Number,
       required: true,
     },
-    bedrooms: {
-      type: Number,
+    category: {
+      type: String,
       required: true,
     },
-    furnished: {
+    virtualEvent: {
       type: Boolean,
       required: true,
     },
-    parking: {
+    catering: {
       type: Boolean,
       required: true,
     },
     type: {
       type: String,
+      enum: [
+        "conference",
+        "workshop",
+        "concert",
+        "sports",
+        "exhibition",
+        "other",
+      ],
       required: true,
     },
     offer: {
@@ -58,6 +74,6 @@ const listingSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Listing = mongoose.model('Listing', listingSchema);
+const Event = mongoose.model("Event", eventSchema);
 
-export default Listing;
+export default Event;

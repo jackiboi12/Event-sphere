@@ -3,11 +3,12 @@ import { app } from "../firebase";
 import { useDispatch } from "react-redux";
 import { signInSuccess } from "../redux/user/userSlice";
 import { useNavigate } from "react-router-dom";
-import { FcGoogle } from "react-icons/fc";
+import { FaGoogle } from "react-icons/fa";
 
 export default function OAuth() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const handleGoogleClick = async () => {
     try {
       const provider = new GoogleAuthProvider();
@@ -33,14 +34,15 @@ export default function OAuth() {
       console.log("could not sign in with google", error);
     }
   };
+
   return (
     <button
       onClick={handleGoogleClick}
       type="button"
-      className="w-full flex items-center justify-center gap-2 bg-white text-neutral-700 border border-neutral-300 p-3 rounded-lg hover:bg-neutral-50 transition-colors"
+      className="w-full bg-white border border-neutral-300 text-neutral-800 px-6 py-3 rounded-lg hover:bg-neutral-50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-200 flex items-center justify-center gap-2"
     >
-      <FcGoogle className="text-xl" />
-      <span>Continue with Google</span>
+      <FaGoogle className="text-red-500" />
+      <span className="font-medium">Continue with Google</span>
     </button>
   );
 }

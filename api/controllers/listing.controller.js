@@ -1,50 +1,50 @@
-import Listing from '../models/listing.model.js';
-import { errorHandler } from '../utils/error.js';
+import Event from "../models/listing.model.js";
+import { errorHandler } from "../utils/error.js";
 
 export const createListing = async (req, res, next) => {
   try {
-    const listing = await Listing.create(req.body);
-    return res.status(201).json(listing);
+    const event = await Event.create(req.body);
+    return res.status(201).json(event);
   } catch (error) {
     next(error);
   }
 };
 
 export const deleteListing = async (req, res, next) => {
-  const listing = await Listing.findById(req.params.id);
+  const event = await Event.findById(req.params.id);
 
-  if (!listing) {
-    return next(errorHandler(404, 'Listing not found!'));
+  if (!event) {
+    return next(errorHandler(404, "Event not found!"));
   }
 
-  if (req.user.id !== listing.userRef) {
-    return next(errorHandler(401, 'You can only delete your own listings!'));
+  if (req.user.id !== event.userRef) {
+    return next(errorHandler(401, "You can only delete your own events!"));
   }
 
   try {
-    await Listing.findByIdAndDelete(req.params.id);
-    res.status(200).json('Listing has been deleted!');
+    await Event.findByIdAndDelete(req.params.id);
+    res.status(200).json("Event has been deleted!");
   } catch (error) {
     next(error);
   }
 };
 
 export const updateListing = async (req, res, next) => {
-  const listing = await Listing.findById(req.params.id);
-  if (!listing) {
-    return next(errorHandler(404, 'Listing not found!'));
+  const event = await Event.findById(req.params.id);
+  if (!event) {
+    return next(errorHandler(404, "Event not found!"));
   }
-  if (req.user.id !== listing.userRef) {
-    return next(errorHandler(401, 'You can only update your own listings!'));
+  if (req.user.id !== event.userRef) {
+    return next(errorHandler(401, "You can only update your own events!"));
   }
 
   try {
-    const updatedListing = await Listing.findByIdAndUpdate(
+    const updatedEvent = await Event.findByIdAndUpdate(
       req.params.id,
       req.body,
       { new: true }
     );
-    res.status(200).json(updatedListing);
+    res.status(200).json(updatedEvent);
   } catch (error) {
     next(error);
   }
@@ -52,11 +52,11 @@ export const updateListing = async (req, res, next) => {
 
 export const getListing = async (req, res, next) => {
   try {
-    const listing = await Listing.findById(req.params.id);
-    if (!listing) {
-      return next(errorHandler(404, 'Listing not found!'));
+    const event = await Event.findById(req.params.id);
+    if (!event) {
+      return next(errorHandler(404, "Event not found!"));
     }
-    res.status(200).json(listing);
+    res.status(200).json(event);
   } catch (error) {
     next(error);
   }
@@ -64,51 +64,96 @@ export const getListing = async (req, res, next) => {
 
 export const getListings = async (req, res, next) => {
   try {
+    console.log("Received search params:", req.query);
+
     const limit = parseInt(req.query.limit) || 9;
     const startIndex = parseInt(req.query.startIndex) || 0;
     let offer = req.query.offer;
 
-    if (offer === undefined || offer === 'false') {
+    if (offer === undefined || offer === "false") {
       offer = { $in: [false, true] };
     }
 
-    let furnished = req.query.furnished;
+    let virtualEvent = req.query.virtualEvent;
 
-    if (furnished === undefined || furnished === 'false') {
-      furnished = { $in: [false, true] };
+    if (virtualEvent === undefined || virtualEvent === "false") {
+      virtualEvent = { $in: [false, true] };
     }
 
-    let parking = req.query.parking;
+    let catering = req.query.catering;
 
-    if (parking === undefined || parking === 'false') {
-      parking = { $in: [false, true] };
+    if (catering === undefined || catering === "false") {
+      catering = { $in: [false, true] };
     }
 
     let type = req.query.type;
 
-    if (type === undefined || type === 'all') {
-      type = { $in: ['sale', 'rent'] };
+    if (type === undefined || type === "all") {
+      type = {
+        $in: [
+          "conference",
+          "workshop",
+          "concert",
+          "sports",
+          "exhibition",
+          "other",
+        ],
+      };
     }
 
-    const searchTerm = req.query.searchTerm || '';
+    const category = req.query.category || "";
+    const searchTerm = req.query.searchTerm || "";
 
-    const sort = req.query.sort || 'createdAt';
+    // Handle both minPrice and minTicketPrice (use minPrice if available)
+    const minPrice = req.query.minPrice || req.query.minTicketPrice || 0;
+    const maxPrice = req.query.maxPrice || req.query.maxTicketPrice || 1000000;
 
-    const order = req.query.order || 'desc';
+    const minCapacity = req.query.minCapacity || 1;
+    const maxCapacity = req.query.maxCapacity || 1000;
+    const sort = req.query.sort || "createdAt";
+    const order = req.query.order || "desc";
 
-    const listings = await Listing.find({
-      name: { $regex: searchTerm, $options: 'i' },
+    // For date-based searching
+    const fromDate = req.query.fromDate ? new Date(req.query.fromDate) : null;
+    const toDate = req.query.toDate ? new Date(req.query.toDate) : null;
+
+    let dateFilter = {};
+    if (fromDate && toDate) {
+      dateFilter = {
+        eventDate: {
+          $gte: fromDate,
+          $lte: toDate,
+        },
+      };
+    } else if (fromDate) {
+      dateFilter = { eventDate: { $gte: fromDate } };
+    } else if (toDate) {
+      dateFilter = { eventDate: { $lte: toDate } };
+    }
+
+    const queryObj = {
+      name: { $regex: searchTerm, $options: "i" },
       offer,
-      furnished,
-      parking,
+      virtualEvent,
+      catering,
       type,
-    })
+      category: { $regex: category, $options: "i" },
+      ticketPrice: { $gte: minPrice, $lte: maxPrice },
+      capacity: { $gte: minCapacity, $lte: maxCapacity },
+      ...dateFilter,
+    };
+
+    console.log("MongoDB query:", JSON.stringify(queryObj, null, 2));
+
+    const events = await Event.find(queryObj)
       .sort({ [sort]: order })
       .limit(limit)
       .skip(startIndex);
 
-    return res.status(200).json(listings);
+    console.log("Results found:", events.length);
+    return res.status(200).json(events);
   } catch (error) {
+    console.error("Search error:", error);
     next(error);
   }
 };
