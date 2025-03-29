@@ -51,7 +51,7 @@ export default function SignIn() {
           <div className="hero-gradient p-8 text-center">
             <h1 className="text-3xl font-bold text-white mb-2">Welcome Back</h1>
             <p className="text-white/80">
-              Sign in to your BooknStay Events account
+              Sign in to your EventSphere Events account
             </p>
           </div>
 

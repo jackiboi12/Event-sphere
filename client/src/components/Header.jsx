@@ -62,13 +62,9 @@ export default function Header() {
       >
         <Link to="/">
           <h1 style={{ fontWeight: "bold", fontSize: "1.5rem" }}>
-            <span style={{ color: "var(--primary-600)" }}>Book</span>
-            <span style={{ color: "var(--primary-900)" }}>nStay</span>
-            <span
-              style={{ color: "var(--primary-600)", marginLeft: "0.25rem" }}
-            >
-              Events
-            </span>
+            <span style={{ color: "var(--primary-600)" }}>Event</span>
+            <span style={{ color: "var(--primary-900)" }}>Sphere</span>
+            
           </h1>
         </Link>
 

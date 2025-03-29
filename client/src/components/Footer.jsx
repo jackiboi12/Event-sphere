@@ -19,8 +19,8 @@ export default function Footer() {
           {/* Company Info */}
           <div>
             <h3 className="text-xl font-bold mb-4 flex items-center">
-              <span className="text-primary-500">BooknStay</span>
-              <span className="text-secondary-400">Events</span>
+              <span className="text-primary-500">Event</span>
+              <span className="text-secondary-400">Sphere</span>
             </h3>
             <p className="text-neutral-400 mb-6">
               Discover amazing events, connect with like-minded people, and
@@ -170,14 +170,14 @@ export default function Footer() {
               </li>
               <li className="flex items-center space-x-3">
                 <FaEnvelope className="text-primary-400 flex-shrink-0" />
-                <span className="text-neutral-400">contact@booknstay.com</span>
+                <span className="text-neutral-400">contact@EventSphere.com</span>
               </li>
             </ul>
           </div>
         </div>
 
         <div className="border-t border-neutral-800 py-6 text-center text-neutral-500">
-          <p>&copy; {currentYear} BooknStay Events. All rights reserved.</p>
+          <p>&copy; {currentYear} EventSphere Events. All rights reserved.</p>
         </div>
       </div>
     </footer>

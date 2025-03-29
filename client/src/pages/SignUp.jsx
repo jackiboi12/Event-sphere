@@ -48,7 +48,7 @@ export default function SignUp() {
               Create Account
             </h1>
             <p className="text-white/80">
-              Join BooknStay Events to discover and book amazing events
+              Join EventSphere Events to discover and book amazing events
             </p>
           </div>
 
